@@ -18,8 +18,8 @@ $mentee_id = $_GET['id'];
 
 // Database connection
 $servername = "localhost";
-$username = "tarryn_Lindokuhle";
-$password = "L1nd0kuhle";
+$username = "root";
+$password = "";
 $dbname = "tarryn_workplaceportal";
 
 $conn = new mysqli($servername, $username, $password, $dbname);

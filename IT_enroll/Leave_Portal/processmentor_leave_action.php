@@ -11,8 +11,8 @@ if (!isset($_SESSION['mentor_logged_in'])) {
 
 // Database connection (Consider placing this in a separate config/connection file for better practice)
 $servername = "localhost";
-$username = "tarryn_Lindokuhle";
-$password = "L1nd0kuhle";
+$username = "root";
+$password = "";
 $dbname = "tarryn_workplaceportal";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
