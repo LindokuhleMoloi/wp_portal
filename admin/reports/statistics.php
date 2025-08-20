@@ -1,7 +1,7 @@
 <?php
 
 // Database connection
-$conn = new mysqli("localhost", "tarryn_Lindokuhle", "L1nd0kuhle", "tarryn_workplaceportal");
+$conn = new mysqli("localhost", "root", "", "tarryn_workplaceportal");
 
 // Check connection
 if ($conn->connect_error) {

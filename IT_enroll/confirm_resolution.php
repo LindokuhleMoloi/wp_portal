@@ -9,7 +9,7 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 // Database connection
-$conn = new mysqli("localhost", "tarryn_Lindokuhle", "L1nd0kuhle", "tarryn_workplaceportal");
+$conn = new mysqli("localhost", "root", "", "tarryn_workplaceportal");
 
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);

@@ -2,8 +2,8 @@
 // check_ticket_status.php
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['employee_code'])) {
     $servername = "localhost";
-    $username = "tarryn_Lindokuhle"; 
-    $password = "L1nd0kuhle"; 
+    $username = "root"; 
+    $password = ""; 
     $database = "tarryn_workplaceportal"; 
 
     // Create connection

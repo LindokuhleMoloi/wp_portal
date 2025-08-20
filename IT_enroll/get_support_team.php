@@ -1,5 +1,5 @@
 <?php
-$mysqli = new mysqli("localhost", "tarryn_Lindokuhle", "L1nd0kuhle", "tarryn_workplaceportal");
+$mysqli = new mysqli("localhost", "root", "", "tarryn_workplaceportal");
 if ($mysqli->connect_error) {
     die(json_encode([])); // Return empty array on error
 }

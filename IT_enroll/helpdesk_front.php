@@ -39,7 +39,7 @@ function sendEmail($toEmail, $subject, $body)
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $mysqli = new mysqli("localhost", "tarryn_Lindokuhle", "L1nd0kuhle", "tarryn_workplaceportal");
+    $mysqli = new mysqli("localhost", "root", "", "tarryn_workplaceportal");
     if ($mysqli->connect_error) {
         die("Connection failed: " . $mysqli->connect_error);
     }

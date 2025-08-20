@@ -1,8 +1,8 @@
 <?php
 // Database configuration
 $db_host = "localhost";
-$db_user = "tarryn_Lindokuhle";
-$db_pass = "L1nd0kuhle";
+$db_user = "root";
+$db_pass = "";
 $db_name = "tarryn_workplaceportal";
 
 // Establish database connection
