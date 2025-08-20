@@ -10,6 +10,7 @@ if ($conn->connect_error) {
 // Handle PDF generation request
 if (isset($_POST['generate_pdf'])) {
     require __DIR__ . '/dompdf/autoload.inc.php';
+    
     use Dompdf\Dompdf;
     
     try {
