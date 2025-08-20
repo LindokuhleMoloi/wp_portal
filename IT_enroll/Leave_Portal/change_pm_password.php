@@ -1,5 +1,6 @@
 <?php
-session_start();
+// Require the config file to handle session, database connection, etc.
+require_once(__DIR__ . '/../../config.php');
 
 // Redirect if not logged in as project manager
 if (!isset($_SESSION['pm_logged_in']) || !isset($_SESSION['pm_employee_id'])) {
@@ -7,16 +8,8 @@ if (!isset($_SESSION['pm_logged_in']) || !isset($_SESSION['pm_employee_id'])) {
     exit();
 }
 
-// Database connection
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "tarryn_workplaceportal";
-
-$conn = new mysqli($servername, $username, $password, $dbname);
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+// The database connection is now managed by config.php
+// The global $conn object is available for use.
 
 $pm_employee_id = $_SESSION['pm_employee_id'];
 $error = '';
@@ -72,6 +65,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $error = $e->getMessage();
     }
 }
+
+// The connection is now managed by config.php, which closes it automatically
+// at the end of the script's execution.
+// $conn->close();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -310,4 +307,3 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </script>
 </body>
 </html>
-<?php $conn->close(); ?>

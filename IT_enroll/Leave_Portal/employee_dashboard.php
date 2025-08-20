@@ -1,26 +1,17 @@
-
 <?php
 // employee_dashboard.php
 
-session_start();
-
-// --- Database Connection ---
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "tarryn_workplaceportal";
-
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+// Require the config file to handle session, database connection, etc.
+require_once(__DIR__ . '/../../config.php');
 
 // Redirect if not logged in
 if (!isset($_SESSION['employee_id'])) {
     header("Location: leave_login.php");
     exit();
 }
+
+// The database connection is now managed by config.php
+// The global $conn object is available for use.
 
 $employee_id = $_SESSION['employee_id'];
 $employee_fullname = $_SESSION['fullname'] ?? 'Employee';
@@ -88,6 +79,9 @@ if (isset($_GET['error'])) {
     $error_message = urldecode($_GET['error']);
 }
 
+// The connection is now managed by config.php, which closes it automatically
+// at the end of the script's execution.
+// $conn->close();
 ?>
 <!DOCTYPE html>
 <html lang="en">

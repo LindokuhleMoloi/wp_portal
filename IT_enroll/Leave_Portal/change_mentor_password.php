@@ -1,6 +1,6 @@
 <?php
-// change_mentor_password.php
-session_start();
+// Require the config file to handle session, database connection, etc.
+require_once(__DIR__ . '/../../config.php');
 
 // Redirect if mentor is not logged in
 if (!isset($_SESSION['mentor_logged_in']) || $_SESSION['mentor_logged_in'] !== true) {
@@ -8,16 +8,8 @@ if (!isset($_SESSION['mentor_logged_in']) || $_SESSION['mentor_logged_in'] !== t
     exit();
 }
 
-// Database connection
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "tarryn_workplaceportal";
-
-$conn = new mysqli($servername, $username, $password, $dbname);
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+// The database connection is now managed by config.php
+// The global $conn object is available for use.
 
 $employee_id = $_SESSION['mentor_employee_id'];
 $error = '';
@@ -102,7 +94,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-$conn->close();
+// The connection is now managed by config.php, which closes it automatically
+// at the end of the script's execution.
+// $conn->close();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -113,7 +107,6 @@ $conn->close();
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* Your existing CSS (copy-paste directly from project_manager_login.php or change_pm_password.php) */
         :root {
             --primary-color: #0e6574;
             --secondary-color: #e84e17;
@@ -136,7 +129,7 @@ $conn->close();
         }
 
         body {
-            background: url('system-image.png') no-repeat center center fixed;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('system-image.png') no-repeat center center fixed;
             background-size: cover;
             background-color: #000;
             display: flex;
@@ -189,11 +182,11 @@ $conn->close();
             padding: 40px;
             border-radius: 25px;
             width: 100%;
-            max-width: 900px;
+            max-width: 500px;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
             margin-bottom: 20px;
             overflow: hidden;
-            color: white; /* Added for text visibility */
+            color: white;
         }
 
         .container::before {
@@ -223,15 +216,16 @@ $conn->close();
             z-index: 2;
         }
 
-        input[type="password"] {
+        input[type="password"], input[type="text"] {
             width: 100%;
-            padding: 16px;
+            padding: 16px 45px 16px 16px;
             border: none;
             border-radius: 18px;
             background-color: white;
             font-size: 1.1rem;
             text-align: center;
             margin-bottom: 15px;
+            box-sizing: border-box;
         }
 
         input::placeholder {
@@ -271,8 +265,9 @@ $conn->close();
             background-color: rgba(220, 53, 69, 0.2);
             border-radius: 8px;
             text-align: center;
-            margin-bottom: 20px; /* Added margin */
+            margin-bottom: 20px;
         }
+        
         .success-message {
             color: var(--light-color);
             background-color: rgba(40, 167, 69, 0.2);
@@ -283,14 +278,22 @@ $conn->close();
             font-weight: 600;
         }
 
-
         .password-toggle {
             position: absolute;
-            right: 20px;
+            right: 15px;
             top: 16px;
             cursor: pointer;
             color: #666;
             z-index: 3;
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            padding: 0;
+            height: 20px;
+            width: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         .instructions {
@@ -298,6 +301,8 @@ $conn->close();
             text-align: center;
             font-size: 0.9em;
             opacity: 0.8;
+            position: relative;
+            z-index: 2;
         }
 
         .back-link {
@@ -307,7 +312,10 @@ $conn->close();
             color: var(--accent-color);
             text-decoration: none;
             font-weight: 600;
+            position: relative;
+            z-index: 2;
         }
+        
         .back-link:hover {
             text-decoration: underline;
         }
@@ -339,65 +347,58 @@ $conn->close();
     <div class="container">
         <h2><i class="fas fa-key"></i> Change Mentor Password</h2>
         
-        <?php if (!empty($error)): ?>
-            <div class="error-message">
-                <i class="fas fa-exclamation-circle"></i> <?php echo htmlspecialchars($error); ?>
-            </div>
-        <?php endif; ?>
-        <?php if (!empty($success)): ?>
-            <div class="success-message">
-                <i class="fas fa-check-circle"></i> <?php echo htmlspecialchars($success); ?>
-            </div>
-        <?php endif; ?>
-
-        <?php if ($is_first_time_change): ?>
-            <p class="instructions">
-                This is your first login. Please change your password for security.
-            </p>
-        <?php endif; ?>
+        <div class="instructions">
+            This is your first login. Please change your password for security.
+        </div>
         
         <form id="changePasswordForm" action="change_mentor_password.php" method="POST">
             <div class="form-group">
                 <input type="password" name="current_password" id="current_password" 
                        placeholder="Current Password" required>
-                <i class="fas fa-eye password-toggle" id="toggleCurrentPassword"></i>
+                <button type="button" class="password-toggle" id="toggleCurrentPassword">
+                    <i class="fas fa-eye"></i>
+                </button>
             </div>
             
             <div class="form-group">
                 <input type="password" name="new_password" id="new_password" 
                        placeholder="New Password" required>
-                <i class="fas fa-eye password-toggle" id="toggleNewPassword"></i>
+                <button type="button" class="password-toggle" id="toggleNewPassword">
+                    <i class="fas fa-eye"></i>
+                </button>
             </div>
             
             <div class="form-group">
                 <input type="password" name="confirm_new_password" id="confirm_new_password" 
                        placeholder="Confirm New Password" required>
-                <i class="fas fa-eye password-toggle" id="toggleConfirmPassword"></i>
+                <button type="button" class="password-toggle" id="toggleConfirmPassword">
+                    <i class="fas fa-eye"></i>
+                </button>
             </div>
             
             <button type="submit" class="btn">
                 <i class="fas fa-sync-alt"></i> Change Password
             </button>
         </form>
-        <?php
-        // This link is removed because we are doing a direct header redirect now.
-        // if (!empty($success)): ?>
-            <!-- <a href="mentor_dashboard.php" class="back-link">Go to Dashboard <i class="fas fa-arrow-right"></i></a> -->
-        <?php // endif; ?>
     </div>
 
     <script>
         // Password toggle functionality for all fields
         function setupPasswordToggle(inputId, toggleId) {
-            document.getElementById(toggleId).addEventListener('click', function() {
-                const passwordInput = document.getElementById(inputId);
+            const toggleBtn = document.getElementById(toggleId);
+            const passwordInput = document.getElementById(inputId);
+            const icon = toggleBtn.querySelector('i');
+            
+            toggleBtn.addEventListener('click', function() {
                 if (passwordInput.type === 'password') {
                     passwordInput.type = 'text';
-                    this.classList.replace('fa-eye', 'fa-eye-slash');
+                    icon.classList.replace('fa-eye', 'fa-eye-slash');
                 } else {
                     passwordInput.type = 'password';
-                    this.classList.replace('fa-eye-slash', 'fa-eye');
+                    icon.classList.replace('fa-eye-slash', 'fa-eye');
                 }
+                // Keep focus on the input field
+                passwordInput.focus();
             });
         }
 

@@ -1,11 +1,29 @@
 <?php
-session_start();
-require_once 'db_connection.php'; // Your DB connection file
+// Require the config file to handle session, database connection, etc.
+require_once(__DIR__ . '/../../config.php');
 
-$leave_id = $_GET['leave_id'];
+// The database connection is now managed by config.php
+// The global $conn object is available for use.
+
+$leave_id = $_GET['leave_id'] ?? null;
+
+if (!$leave_id) {
+    echo json_encode([
+        'error' => 'Leave ID not provided'
+    ]);
+    exit();
+}
 
 $sql = "SELECT mentor_status FROM leave_applications WHERE id = ?";
 $stmt = $conn->prepare($sql);
+
+if ($stmt === false) {
+    echo json_encode([
+        'error' => 'Database error: ' . $conn->error
+    ]);
+    exit();
+}
+
 $stmt->bind_param("i", $leave_id);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -20,6 +38,10 @@ if ($result->num_rows > 0) {
         'error' => 'Leave not found'
     ]);
 }
+
 $stmt->close();
-$conn->close();
+
+// The connection is now managed by config.php, which closes it automatically
+// at the end of the script's execution.
+// $conn->close();
 ?>

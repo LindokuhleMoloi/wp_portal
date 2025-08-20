@@ -1,4 +1,5 @@
 <?php
+
 // pending_approvals.php
 session_start();
 

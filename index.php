@@ -72,6 +72,71 @@ require_once('./config.php');
         transform: scale(1.05);
       }
       
+      /* Person Icon Styles */
+      .person-icon {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 0 15px;
+        position: relative;
+      }
+      
+      .icon-container {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 10px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        transition: all 0.3s ease;
+      }
+      
+      .icon-in .icon-container {
+        background: linear-gradient(135deg, #4CAF50, #45a049);
+        border: 3px solid #3d8b40;
+      }
+      
+      .icon-out .icon-container {
+        background: linear-gradient(135deg, #dc3545, #c82333);
+        border: 3px solid #bd2130;
+      }
+      
+      .icon-container i {
+        font-size: 2.5rem;
+        color: white;
+        transition: all 0.3s ease;
+      }
+      
+      .person-icon:hover .icon-container {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+      }
+      
+      .person-icon:hover .icon-container i {
+        transform: scale(1.1);
+      }
+      
+      .button-text {
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: #333;
+        text-align: center;
+        margin-top: 5px;
+        text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
+      }
+      
+      .buttons-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 2rem;
+        gap: 30px;
+      }
+      
       /* Existing Styles */
       .login-title {
         text-shadow: 2px 2px black;
@@ -167,6 +232,13 @@ require_once('./config.php');
           justify-content: space-around;
           transition: 1s;
           gap: 0;
+        }
+        .buttons-container {
+          flex-direction: column;
+          gap: 20px;
+        }
+        .person-icon {
+          margin: 10px 0;
         }
       }
       .pill-btn {
@@ -268,13 +340,23 @@ require_once('./config.php');
                                                                 <button type="button" class="pill-btn" data-clipboard-text="2025-">2025-</button>
                                                             </div>
                                                         </div>
-                                                        <div class="form-group text-center">
-                                                            <button class="btn btn-lg rounded-pill btn-primary elog px-4 col-4" type="button" data-type='1'>
-                                                                <i class="fas fa-sign-in-alt"></i> In
-                                                            </button>
-                                                            <button class="btn btn-lg rounded-pill btn-danger elog px-4 col-4" type="button" data-type='2'>
-                                                                <i class="fas fa-sign-out-alt"></i> Out
-                                                            </button>
+                                                        <div class="buttons-container">
+                                                            <div class="person-icon icon-in">
+                                                                <div class="icon-container">
+                                                                    <i class="fas fa-sign-in-alt"></i>
+                                                                </div>
+                                                                <button class="btn btn-lg rounded-pill btn-primary px-4 elog" type="button" data-type='1'>
+                                                                    <span class="button-text">Check In</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="person-icon icon-out">
+                                                                <div class="icon-container">
+                                                                    <i class="fas fa-sign-out-alt"></i>
+                                                                </div>
+                                                                <button class="btn btn-lg rounded-pill btn-danger px-4 elog" type="button" data-type='2'>
+                                                                    <span class="button-text">Check Out</span>
+                                                                </button>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -312,10 +394,15 @@ require_once('./config.php');
                                                             <label for="purpose">Purpose</label>
                                                             <textarea rows="2" id="purpose" name="purpose" class="form-control form-control-lg rounded-0" autocomplete="on"></textarea>
                                                         </div>
-                                                        <div class="form-group text-center">
-                                                            <button class="btn btn-lg rounded-pill btn-primary elog px-4 col-4" type="button" data-type='1'>
-                                                                <i class="fas fa-sign-in-alt"></i> In
-                                                            </button>
+                                                        <div class="buttons-container">
+                                                            <div class="person-icon icon-in">
+                                                                <div class="icon-container">
+                                                                    <i class="fas fa-sign-in-alt"></i>
+                                                                </div>
+                                                                <button class="btn btn-lg rounded-pill btn-primary px-4 elog" type="button" data-type='1'>
+                                                                    <span class="button-text">Visitor In</span>
+                                                                </button>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -342,10 +429,15 @@ require_once('./config.php');
                                                         ?>
                                                     </select>
                                                 </div>
-                                                <div class="form-group text-center">
-                                                    <button id="visitor-out-btn" class="btn btn-lg rounded-pill btn-danger elog px-4 col-4" type="button">
-                                                        <i class="fas fa-door-open"></i> Out
-                                                    </button>
+                                                <div class="buttons-container">
+                                                    <div class="person-icon icon-out">
+                                                        <div class="icon-container">
+                                                            <i class="fas fa-door-open"></i>
+                                                        </div>
+                                                        <button id="visitor-out-btn" class="btn btn-lg rounded-pill btn-danger px-4" type="button">
+                                                            <span class="button-text">Visitor Out</span>
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
