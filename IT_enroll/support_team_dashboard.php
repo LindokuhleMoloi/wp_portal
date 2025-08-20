@@ -7,8 +7,8 @@ if (!isset($_SESSION['employee_code'])) {
 }
 
 $servername = "localhost";
-$username = "tarryn_Lindokuhle";
-$password = "L1nd0kuhle";
+$username = "root";
+$password = "";
 $dbname = "tarryn_workplaceportal";
 
 $conn = new mysqli($servername, $username, $password, $dbname);

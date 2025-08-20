@@ -36,7 +36,7 @@
             <option value="">-- Select an Employee --</option>
             <?php
             // Database connection
-            $conn = new mysqli("localhost", "tarryn_Lindokuhle", "L1nd0kuhle", "tarryn_workplaceportal");
+            $conn = new mysqli("localhost", "root", "", "tarryn_workplaceportal");
             
             // Fetch employee list
             $employeesQuery = "SELECT id, fullname FROM employee_list";

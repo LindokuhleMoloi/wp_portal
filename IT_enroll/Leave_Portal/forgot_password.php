@@ -1,23 +1,16 @@
 <?php
 // forgot_password.php
-session_start();
+
+// Require the config file to handle session, database connection, etc.
+require_once(__DIR__ . '/../../config.php');
 
 // Security headers
 header("X-Frame-Options: DENY");
 header("X-Content-Type-Options: nosniff");
 header("X-XSS-Protection: 1; mode=block");
 
-// Database connection
-$servername = "localhost";
-$username = "tarryn_Lindokuhle";
-$password = "L1nd0kuhle";
-$dbname = "tarryn_workplaceportal";
-
-$conn = new mysqli($servername, $username, $password, $dbname);
-if ($conn->connect_error) {
-    error_log("Database connection failed: " . $conn->connect_error);
-    die("System error. Please try again later.");
-}
+// The database connection is now managed by config.php
+// The global $conn object is available for use.
 
 // Initialize variables
 $error = '';
@@ -32,10 +25,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     try {
         // Validate inputs
-        if (empty($employee_code) {
+        if (empty($employee_code)) {
             throw new Exception("Employee code is required");
         }
-        if (empty($new_password) {
+        if (empty($new_password)) {
             throw new Exception("New password is required");
         }
         if (empty($confirm_password)) {
@@ -110,6 +103,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 if (!isset($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
+
+// The connection is now managed by config.php, which closes it automatically
+// at the end of the script's execution.
+// $conn->close();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -488,7 +485,3 @@ if (!isset($_SESSION['csrf_token'])) {
   </script>
 </body>
 </html>
-<?php
-// Close connection
-$conn->close();
-?>

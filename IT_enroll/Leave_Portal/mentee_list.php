@@ -1,5 +1,6 @@
 <?php
-session_start();
+// Require the config file to handle session, database connection, etc.
+require_once(__DIR__ . '/../../config.php');
 
 // Redirect if not logged in as mentor
 if (!isset($_SESSION['mentor_logged_in'])) {
@@ -7,16 +8,8 @@ if (!isset($_SESSION['mentor_logged_in'])) {
     exit();
 }
 
-// Database connection
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "tarryn_workplaceportal";
-
-$conn = new mysqli($servername, $username, $password, $dbname);
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+// The database connection is now managed by config.php
+// The global $conn object is available for use.
 
 // Get current mentor details
 $mentor_id = $_SESSION['mentor_employee_id'];
@@ -50,7 +43,9 @@ if ($stmt_mentees) {
     $stmt_mentees->close();
 }
 
-$conn->close();
+// The connection is now managed by config.php, which closes it automatically
+// at the end of the script's execution.
+// $conn->close();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -192,7 +187,7 @@ $conn->close();
         }
 
         .header-btn i {
-            font-size: 1rem;
+            font-size: 1.rem;
         }
 
         /* Main Content */

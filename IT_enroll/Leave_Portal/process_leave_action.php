@@ -17,8 +17,8 @@ if (!$pm_id) {
 
 // Database connection
 $servername = "localhost";
-$username = "tarryn_Lindokuhle";
-$password = "L1nd0kuhle";
+$username = "root";
+$password = "";
 $dbname = "tarryn_workplaceportal";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
@@ -65,15 +65,7 @@ $check_stmt->close();
 $currentDateTime = date('Y-m-d H:i:s');
 
 if ($action === 'approve') {
-    // Only allow approval if mentor has approved (status=1)
-    if ($mentor_status != 1) {
-        $message = $mentor_status == 0 
-            ? 'Cannot approve - Mentor has not approved this leave yet' 
-            : 'Cannot approve - Mentor has rejected this leave';
-        echo json_encode(['success' => false, 'message' => $message]);
-        $conn->close();
-        exit();
-    }
+    // Logic to approve leave regardless of mentor status
 
     // Update pm_status to 1 and set approval details
     $sql = "UPDATE leave_applications 
@@ -81,13 +73,23 @@ if ($action === 'approve') {
                 pm_approved_by = ?,
                 pm_approval_date = ?,
                 status = 1 /* Set overall status to approved */
-            WHERE id = ? AND mentor_status = 1"; // Additional safety check
+            WHERE id = ?"; 
     
     $stmt = $conn->prepare($sql);
+    
     if ($stmt) {
         $stmt->bind_param("isi", $pm_id, $currentDateTime, $leaveId);
+        
         if ($stmt->execute()) {
-            echo json_encode(['success' => true, 'message' => 'Leave approved successfully!']);
+            // Set the message based on the original mentor status
+            $message = 'Leave approved successfully!';
+            if ($mentor_status == 0) {
+                $message = 'Leave approved, but note: mentor has not yet approved this leave.';
+            } elseif ($mentor_status == -1) { // Assuming -1 is rejected, based on previous code logic
+                $message = 'Leave approved, but note: mentor has rejected this leave.';
+            }
+
+            echo json_encode(['success' => true, 'message' => $message]);
         } else {
             echo json_encode(['success' => false, 'message' => 'Failed to approve leave: ' . $stmt->error]);
         }
@@ -96,29 +98,16 @@ if ($action === 'approve') {
         echo json_encode(['success' => false, 'message' => 'SQL prepare failed: ' . $conn->error]);
     }
 } elseif ($action === 'reject') {
-    // Only allow rejection if mentor has approved (status=1)
-    if ($mentor_status != 1) {
-        $message = $mentor_status == 0 
-            ? 'Cannot reject - Mentor has not decided on this leave yet' 
-            : 'Leave already rejected by mentor';
-        echo json_encode(['success' => false, 'message' => $message]);
-        $conn->close();
-        exit();
-    }
-
-    // Logic to reject leave: update pm_status to 2 and save reason
-    if (!isset($_POST['reason'])) {
+    // Logic to reject leave regardless of mentor status
+    
+    // Ensure a rejection reason is provided
+    if (!isset($_POST['reason']) || empty(trim($_POST['reason']))) {
         echo json_encode(['success' => false, 'message' => 'Rejection reason is required.']);
         $conn->close();
         exit();
     }
     
     $reason = trim($_POST['reason']);
-    if (empty($reason)) {
-        echo json_encode(['success' => false, 'message' => 'Rejection reason cannot be empty.']);
-        $conn->close();
-        exit();
-    }
 
     $sql = "UPDATE leave_applications 
             SET pm_status = 2, 
@@ -126,13 +115,23 @@ if ($action === 'approve') {
                 pm_rejection_date = ?,
                 pm_rejection_reason = ?,
                 status = 2 /* Set overall status to rejected */
-            WHERE id = ? AND mentor_status = 1"; // Additional safety check
+            WHERE id = ?";
     
     $stmt = $conn->prepare($sql);
     if ($stmt) {
         $stmt->bind_param("issi", $pm_id, $currentDateTime, $reason, $leaveId);
         if ($stmt->execute()) {
-            echo json_encode(['success' => true, 'message' => 'Leave rejected successfully!']);
+            // Set the message based on the original mentor status
+            $message = 'Leave rejected successfully!';
+            if ($mentor_status == 0) {
+                $message = 'Leave rejected, but note: the mentor had not yet acted on this leave request.';
+            } elseif ($mentor_status == 1) {
+                $message = 'Leave rejected, overriding the mentor\'s prior approval.';
+            } elseif ($mentor_status == -1) { // Assuming -1 is rejected
+                $message = 'Leave rejected. This leave was also previously rejected by the mentor.';
+            }
+
+            echo json_encode(['success' => true, 'message' => $message]);
         } else {
             echo json_encode(['success' => false, 'message' => 'Failed to reject leave: ' . $stmt->error]);
         }

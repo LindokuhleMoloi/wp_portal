@@ -3,8 +3,8 @@ header('Content-Type: application/json');
 
 // Database connection details
 $servername = "localhost";
-$username = "tarryn_Lindokuhle";
-$password = "L1nd0kuhle";
+$username = "root";
+$password = "";
 $database = "tarryn_workplaceportal";
 
 // Create connection

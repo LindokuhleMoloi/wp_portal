@@ -1,4 +1,5 @@
 <?php
+
 // pending_approvals.php
 session_start();
 
@@ -10,8 +11,8 @@ if (!isset($_SESSION['pm_logged_in'])) {
 
 // Database connection
 $servername = "localhost";
-$username = "tarryn_Lindokuhle";
-$password = "L1nd0kuhle";
+$username = "root";
+$password = "";
 $dbname = "tarryn_workplaceportal";
 
 $conn = new mysqli($servername, $username, $password, $dbname);

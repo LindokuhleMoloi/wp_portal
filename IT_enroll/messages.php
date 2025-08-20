@@ -1,8 +1,8 @@
 <?php
 // Database connection settings
 $servername = "localhost";
-$username = "tarryn_Lindokuhle"; 
-$password = "L1nd0kuhle"; 
+$username = "root"; 
+$password = ""; 
 $database = "tarryn_workplaceportal"; 
 
 // Create connection

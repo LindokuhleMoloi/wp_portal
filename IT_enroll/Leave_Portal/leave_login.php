@@ -1,30 +1,24 @@
 <?php
 // leave_login.php
-session_start();
 
-// Security headers
+// Require the config file to handle session, database connection, etc.
+require_once(__DIR__ . '/../../config.php');
+
+// Security headers (already included in the provided code)
 header("X-Frame-Options: DENY");
 header("X-Content-Type-Options: nosniff");
 header("X-XSS-Protection: 1; mode=block");
 header("Strict-Transport-Security: max-age=31536000; includeSubDomains");
 
-// Redirect if already logged in
+// Redirect if already logged in. This check should come after session_start(),
+// which is now handled by config.php.
 if (isset($_SESSION['employee_id'])) {
     header("Location: employee_dashboard.php");
     exit();
 }
 
-// Database connection
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "tarryn_workplaceportal";
-
-$conn = new mysqli($servername, $username, $password, $dbname);
-if ($conn->connect_error) {
-    error_log("Database connection failed: " . $conn->connect_error);
-    die("System error. Please try again later.");
-}
+// The database connection is now handled by config.php
+// The $conn object is available globally.
 
 // Initialize variables
 $employee_code = '';
@@ -46,7 +40,7 @@ if (isset($_GET['employee_code'])) {
     $employee_code = htmlspecialchars($_GET['employee_code'], ENT_QUOTES, 'UTF-8');
 }
 
-// Set CSRF token if not already set
+// Set CSRF token if not already set (this is a good practice)
 if (!isset($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
@@ -60,6 +54,7 @@ if (!isset($_SESSION['csrf_token'])) {
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
+    /* ... (CSS code is unchanged) ... */
     * {
       margin: 0;
       padding: 0;
@@ -84,7 +79,6 @@ if (!isset($_SESSION['csrf_token'])) {
       position: relative;
     }
 
-    /* Add success message styling */
     .success-message {
       color: #c9f7c9;
       margin: 15px 0;
@@ -443,5 +437,6 @@ if (!isset($_SESSION['csrf_token'])) {
 </body>
 </html>
 <?php
-$conn->close();
+// The connection is now closed by the config file.
+// $conn->close();
 ?>

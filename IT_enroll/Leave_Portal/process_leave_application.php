@@ -1,15 +1,9 @@
 <?php
 // process_leave_application.php
-session_start();
-/*
-// Load PHPMailer classes
-require_once 'PHPMailer/src/Exception.php';
-require_once 'PHPMailer/src/PHPMailer.php';
-require_once 'PHPMailer/src/SMTP.php';
 
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
-*/
+// Require the config file to handle session, database connection, etc.
+require_once(__DIR__ . '/../../config.php');
+
 // Set content type to JSON
 header('Content-Type: application/json');
 
@@ -19,17 +13,8 @@ if (!isset($_SESSION['employee_id'])) {
     exit();
 }
 
-// Database connection
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "tarryn_workplaceportal";
-
-$conn = new mysqli($servername, $username, $password, $dbname);
-if ($conn->connect_error) {
-    echo json_encode(['status' => 'error', 'message' => 'Database connection failed']);
-    exit();
-}
+// The database connection is now managed by config.php
+// The global $conn object is available for use.
 
 // Get POST data
 $employee_id = $_POST['employee_id'] ?? null;
@@ -43,20 +28,18 @@ $force_submit = ($_POST['force_submit'] ?? 'false') === 'true';
 // Validate required fields
 if (!$employee_id || !$leave_type_id || !$start_date || !$end_date || $num_days <= 0) {
     echo json_encode(['status' => 'error', 'message' => 'Invalid leave application data']);
-    $conn->close();
     exit();
 }
 
 // Get employee and mentor details
 $employee = [];
 $sql_employee = "SELECT e.id, e.fullname, e.email, e.mentor_id, m.email AS mentor_email, 
-                m.mentor_name AS mentor_name FROM employee_list e 
-                LEFT JOIN mentor m ON e.mentor_id = m.mentor_id WHERE e.id = ?";
+                 m.mentor_name AS mentor_name FROM employee_list e 
+                 LEFT JOIN mentor m ON e.mentor_id = m.mentor_id WHERE e.id = ?";
 $stmt_employee = $conn->prepare($sql_employee);
 
 if ($stmt_employee === false) {
     echo json_encode(['status' => 'error', 'message' => 'Database error: ' . $conn->error]);
-    $conn->close();
     exit();
 }
 
@@ -76,7 +59,6 @@ $stmt_leave_type = $conn->prepare($sql_leave_type);
 
 if ($stmt_leave_type === false) {
     echo json_encode(['status' => 'error', 'message' => 'Database error: ' . $conn->error]);
-    $conn->close();
     exit();
 }
 
@@ -97,7 +79,6 @@ $stmt = $conn->prepare($sql);
 
 if ($stmt === false) {
     echo json_encode(['status' => 'error', 'message' => 'Database error: ' . $conn->error]);
-    $conn->close();
     exit();
 }
 
@@ -137,13 +118,16 @@ if ($stmt->execute()) {
 }
 
 $stmt->close();
-$conn->close();
+
+// The connection is now managed by config.php, which closes it automatically
+// at the end of the script's execution.
+// $conn->close();
 
 /**
  * Send email notification to mentor using PHPMailer
  */
 function sendMentorNotificationEmail($mentor_email, $mentor_name, $employee_name, $leave_type, 
-                                    $start_date, $end_date, $num_days, $reason, $leave_id) {
+                                     $start_date, $end_date, $num_days, $reason, $leave_id) {
     $mail = new PHPMailer(true);
     
     try {
@@ -271,3 +255,4 @@ HTML;
         return false;
     }
 }
+?>

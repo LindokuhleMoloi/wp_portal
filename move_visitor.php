@@ -12,7 +12,7 @@ if (!$visitorId) {
   exit;
 }
 
-$conn = new mysqli("localhost", "tarryn_Lindokuhle", "L1nd0kuhle", "tarryn_workplaceportal");
+$conn = new mysqli("localhost", "root", "", "tarryn_workplaceportal");
 
 if ($conn->connect_error) {
   echo json_encode(['status' => 'error', 'message' => 'Database connection failed.']);
